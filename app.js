@@ -1,9 +1,10 @@
 var express = require('express'),
-	app = express(),
-	bodyparser = require('body-parser'),
-	mongoose = require('mongoose'),
-	Campground = require('./models/campground');
-
+	seedDB = require('./seed');
+(app = express()),
+	(bodyparser = require('body-parser')),
+	(mongoose = require('mongoose')),
+	(Campground = require('./models/campground'));
+seedDB();
 mongoose.connect('mongodb://localhost:27017/yelpcamp', { useNewUrlParser: true, useUnifiedTopology: true });
 
 // Campground.create(
@@ -82,7 +83,7 @@ app.post('/campgrounds', function(req, res) {
 });
 
 app.get('/campgrounds/:id', function(req, res) {
-	Campground.findById(req.params.id, function(err, foundCamp) {
+	Campground.findById(req.params.id).populate('comments').exec(function(err, foundCamp) {
 		if (err) {
 			console.log(err);
 		} else {
