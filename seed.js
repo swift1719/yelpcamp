@@ -26,9 +26,9 @@ let data = [
 async function seedDB() {
 	//Remove all campgrounds
 	try {
-		await Campground.remove({});
+		await Campground.deleteMany({});
 		console.log('campground removed');
-		await Comment.remove({});
+		await Comment.deleteMany({});
 		console.log('comment removed');
 
 		for (const seed of data) {

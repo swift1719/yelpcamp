@@ -1,13 +1,18 @@
-<%-include("partials/header.ejs")%>
+<%-include("../partials/header.ejs")%>
 <div class="container" style="margin-top: 80px;">
     <h1><%=foundcamp.name%></h1>
     <img class="img-fluid" src="<%=foundcamp.image%>" alt="camp img">
     <p><%=foundcamp.description%></p>
-
+    <p>
+        <a class="btn  btn-success" href="/campgrounds/<%=foundcamp._id%>/comments/new">Add new comment</a>
+    </p>
     <%foundcamp.comments.forEach(comment=>{%>
         <p><strong><%=comment.author%></strong> - <%=comment.text%></p>
     <%});%>
 
+    <p>
+        <a href="/campgrounds">Back to campgrounds...</a>
+    </p>
 </div>
 
-<%-include("partials/footer.ejs");%>
+<%-include("../partials/footer.ejs");%>

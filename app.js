@@ -1,47 +1,16 @@
+const comment = require('./models/comment');
+const e = require('express');
+
 var express = require('express'),
-	seedDB = require('./seed');
-(app = express()),
-	(bodyparser = require('body-parser')),
-	(mongoose = require('mongoose')),
-	(Campground = require('./models/campground'));
+	seedDB = require('./seed'),
+	app = express(),
+	bodyparser = require('body-parser'),
+	mongoose = require('mongoose'),
+	Campground = require('./models/campground'),
+	Comment = require('./models/comment');
+
 seedDB();
 mongoose.connect('mongodb://localhost:27017/yelpcamp', { useNewUrlParser: true, useUnifiedTopology: true });
-
-// Campground.create(
-// 	{
-// 		name: 'Mountain resort',
-// 		image:
-// 			'https://images.unsplash.com/photo-1496080174650-637e3f22fa03?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1006&q=80',
-// 		description: 'this is a huge granite hill awesome beautiful'
-// 	},
-// 	function(err, campground) {
-// 		if (err) {
-// 			console.log(err);
-// 		} else {
-// 			console.log('Newly created campground: ');
-// 			console.log(campground);
-// 		}
-// 	}
-// );
-
-// var campgrounds = [
-// 	,
-// 	{
-// 		name: 'salmon creek',
-// 		image:
-// 			'https://images.unsplash.com/photo-1504851149312-7a075b496cc7?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=649&q=80'
-// 	},
-// 	{
-// 		name: 'granite hill',
-// 		image:
-// 			'https://images.unsplash.com/photo-1487730116645-74489c95b41b?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1050&q=80'
-// 	},
-// 	{
-// 		name: 'Mountain resort',
-// 		image:
-// 			'https://images.unsplash.com/photo-1496080174650-637e3f22fa03?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1006&q=80'
-// 	}
-// ];
 
 app.use(bodyparser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
@@ -54,13 +23,13 @@ app.get('/campgrounds', function(req, res) {
 		if (err) {
 			console.log(err);
 		} else {
-			res.render('index', { campgrounds: allcamps });
+			res.render('./campground/index', { campgrounds: allcamps });
 		}
 	});
 });
 //to add a  new campground show form
 app.get('/campgrounds/new', function(req, res) {
-	res.render('new');
+	res.render('./campground/new');
 });
 //post new added campground from that form
 app.post('/campgrounds', function(req, res) {
@@ -81,17 +50,44 @@ app.post('/campgrounds', function(req, res) {
 		}
 	});
 });
-
+//to show a particular camp
 app.get('/campgrounds/:id', function(req, res) {
 	Campground.findById(req.params.id).populate('comments').exec(function(err, foundCamp) {
 		if (err) {
 			console.log(err);
 		} else {
-			res.render('show', { foundcamp: foundCamp });
+			res.render('./campground/show', { foundcamp: foundCamp });
 		}
 	});
 });
-
+//================
+//comments route
+app.get('/campgrounds/:id/comments/new', (req, res) => {
+	Campground.findById(req.params.id, (err, foundCamp) => {
+		if (err) {
+			console.log(err);
+		} else {
+			res.render('./comments/new', { foundcamp: foundCamp });
+		}
+	});
+});
+app.post('/campgrounds/:id/comments', (req, res) => {
+	Campground.findById(req.params.id, (err, foundCamp) => {
+		if (err) {
+			console.log(err);
+		} else {
+			Comment.create(req.body.comment, (err, comment) => {
+				if (err) {
+					console.log(err);
+				} else {
+					foundCamp.comments.push(comment);
+					foundCamp.save();
+					res.redirect('/campgrounds/' + foundCamp._id);
+				}
+			});
+		}
+	});
+});
 app.listen(3000, function() {
 	console.log('The Yelpcamp Server started!!!');
 });
