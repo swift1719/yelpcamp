@@ -1,10 +1,11 @@
-const comment = require('./models/comment');
-
-var express = require('express'),
+let express = require('express'),
 	seedDB = require('./seed'),
 	app = express(),
 	bodyparser = require('body-parser'),
 	mongoose = require('mongoose'),
+	passport = require('passport'),
+	localStrategy = require('passport-local'),
+	User = require('./models/user'),
 	Campground = require('./models/campground'),
 	Comment = require('./models/comment');
 
@@ -12,8 +13,27 @@ mongoose.connect('mongodb://localhost:27017/yelpcamp', { useNewUrlParser: true, 
 app.use(bodyparser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
 app.use(express.static(__dirname + '/public'));
-
+//middleware to make current user accessible on all routes
+app.use((req, res, next) => {
+	res.locals.currentUser = req.user;
+	next();
+});
 seedDB();
+
+//Passport configuration
+app.use(
+	require('express-session')({
+		secret: 'develop and develop daily',
+		resave: false,
+		saveUninitialized: false
+	})
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new localStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
 
 app.get('/', function(req, res) {
 	res.render('landing');
@@ -62,7 +82,7 @@ app.get('/campgrounds/:id', function(req, res) {
 });
 //================
 //comments route
-app.get('/campgrounds/:id/comments/new', (req, res) => {
+app.get('/campgrounds/:id/comments/new', isLoggedIn, (req, res) => {
 	Campground.findById(req.params.id, (err, foundCamp) => {
 		if (err) {
 			console.log(err);
@@ -71,7 +91,7 @@ app.get('/campgrounds/:id/comments/new', (req, res) => {
 		}
 	});
 });
-app.post('/campgrounds/:id/comments', (req, res) => {
+app.post('/campgrounds/:id/comments', isLoggedIn, (req, res) => {
 	Campground.findById(req.params.id, (err, foundCamp) => {
 		if (err) {
 			console.log(err);
@@ -92,6 +112,52 @@ app.listen(3000, function() {
 	console.log('The Yelpcamp Server started!!!');
 });
 
+//Authenticaton routes
+
+//Sign Up
+app.get('/register', (req, res) => {
+	res.render('register');
+});
+//Sign up post route
+app.post('/register', (req, res) => {
+	let newUser = new User({ username: req.body.username });
+	User.register(newUser, req.body.password, (err, user) => {
+		if (err) {
+			console.log(err);
+			return res.render('register');
+		}
+		passport.authenticate('local')(req, res, () => {
+			res.redirect('/campgrounds');
+		});
+	});
+});
+
+//Login
+app.get('/login', (req, res) => {
+	res.render('login');
+});
+app.post(
+	'/login',
+	passport.authenticate('local', {
+		successRedirect: '/campgrounds',
+		failureRedirect: '/login'
+	}),
+	(req, res) => {}
+);
+
+//Logout route
+app.get('/logout', (req, res) => {
+	req.logout();
+	res.redirect('/campgrounds');
+});
+
+//login logic
+function isLoggedIn(req, res, next) {
+	if (req.isAuthenticated()) {
+		return next();
+	}
+	res.redirect('/login');
+}
 // Restful Routes
 
 // name       url                  verb   desc
