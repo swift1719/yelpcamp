@@ -1,0 +1,18 @@
+.thumbnail {
+	padding: 0;
+}
+.thumbnail img {
+	width: 100%;
+}
+.img-thumbnail {
+	padding: 0;
+}
+.img-thumbnail img {
+	height: 300px;
+}
+.thumbnail .caption {
+	padding: 9px;
+}
+.mar {
+	margin-top: 80px;
+}

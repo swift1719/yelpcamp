@@ -1,14 +1,41 @@
 <%-include("../partials/header.ejs")%>
-<div class="container" style="margin-top: 80px;">
-    <h1><%=foundcamp.name%></h1>
-    <img class="img-fluid" src="<%=foundcamp.image%>" alt="camp img">
-    <p><%=foundcamp.description%></p>
-    <p>
-        <a class="btn  btn-success" href="/campgrounds/<%=foundcamp._id%>/comments/new">Add new comment</a>
-    </p>
-    <%foundcamp.comments.forEach(comment=>{%>
-        <p><strong><%=comment.author%></strong> - <%=comment.text%></p>
-    <%});%>
+<div class="container mar">
+    <div class="row">
+        <div class="col-md-3">
+            <p class="lead">YelpCamp</p>
+            <div class="list-group">
+                <li class="list-group-item active">Info 1</li>
+                <li class="list-group-item">Info 2</li>
+                <li class="list-group-item">Info 3</li>
+            </div>
+        </div>
+        <div class="col-md-9">
+            <div class="thumbnail" >
+                <img class="img-fluid" src="<%=foundcamp.image%>" alt="camp img" >
+                <div class="caption">
+                    <h4 class="float-right">$9.00/night</h4>
+                    <h3><a href="#"><%=foundcamp.name%></a></h3>
+                    <p><%=foundcamp.description%></p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="text-right card-header">
+                    <a class="btn  btn-success" href="/campgrounds/<%=foundcamp._id%>/comments/new">Add new comment</a>
+                </div>
+                <hr>
+                <%foundcamp.comments.forEach(comment=>{%>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <%=comment.author%>
+                            <span class="float-right">10 days ago</span>
+                            <p><%=comment.text%></p>
+                        </div>
+                    </div>
+                <%});%>
+            </div>
+        </div>
+    </div>
+    
 
     <p>
         <a href="/campgrounds">Back to campgrounds...</a>

@@ -1,5 +1,4 @@
 const comment = require('./models/comment');
-const e = require('express');
 
 var express = require('express'),
 	seedDB = require('./seed'),
@@ -9,11 +8,12 @@ var express = require('express'),
 	Campground = require('./models/campground'),
 	Comment = require('./models/comment');
 
-seedDB();
 mongoose.connect('mongodb://localhost:27017/yelpcamp', { useNewUrlParser: true, useUnifiedTopology: true });
-
 app.use(bodyparser.urlencoded({ extended: true }));
 app.set('view engine', 'ejs');
+app.use(express.static(__dirname + '/public'));
+
+seedDB();
 
 app.get('/', function(req, res) {
 	res.render('landing');

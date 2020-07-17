@@ -7,7 +7,7 @@ let data = [
 		name: "Cloud's Rest",
 		image: 'https://farm4.staticflickr.com/3795/10131087094_c1c0a1c859.jpg',
 		description:
-			'Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum'
+			'Lorem ipsum dolor sit amet consectetur adipisicing elit. Laborum mollitia velit natus consequuntur ipsa reiciendis libero sequi, sed tempora enim nulla voluptatum minus quos molestiae, accusamus excepturi corporis tenetur ad! Iusto dolorem perspiciatis soluta consequatur ipsum quam architecto dicta, temporibus maiores vel minus cum labore ullam nulla debitis amet harum ab adipisci ad. Error aspernatur ducimus nemo repudiandae in soluta cupiditate incidunt vitae non voluptatem nostrum, alias ut repellat dolor aliquam odit cumque praesentium excepturi perferendis sequi. Quas fugiat sit unde et, voluptate, distinctio aperiam repudiandae nemo placeat expedita asperiores inventore maxime! Aperiam, magni tempore esse minima blanditiis quam at modi assumenda aliquid molestiae consequuntur suscipit. Obcaecati, nisi in! Doloremque, quae totam? Alias assumenda consequuntur pariatur aliquid, molestiae eligendi nesciunt ipsa veniam vel architecto nulla cum corrupti inventore deserunt incidunt similique odit at numquam. Officia eligendi unde quidem, ipsum sed consectetur laudantium quaerat quo inventore quis, odit voluptate repellendus modi.'
 	},
 	{
 		name: 'Desert Mesa',
