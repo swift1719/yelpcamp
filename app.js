@@ -5,20 +5,25 @@ let express = require('express'),
 	mongoose = require('mongoose'),
 	passport = require('passport'),
 	localStrategy = require('passport-local'),
-	User = require('./models/user'),
-	Campground = require('./models/campground'),
-	Comment = require('./models/comment');
-
+	methodOverride = require('method-override'),
+	User = require('./models/user');
+//requiring routes
+let commentRoutes = require('./routes/comment'),
+	campgroundRoutes = require('./routes/campground'),
+	indexRoutes = require('./routes/index');
+//connecting to mongo database
 mongoose.connect('mongodb://localhost:27017/yelpcamp', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.set('useFindAndModify', false);
+//using bodyParser for conversion of data coming from forms
 app.use(bodyparser.urlencoded({ extended: true }));
+//setting default view engine to automatically take ejs file types
 app.set('view engine', 'ejs');
+//setting up default search path in public directory
 app.use(express.static(__dirname + '/public'));
-//middleware to make current user accessible on all routes
-app.use((req, res, next) => {
-	res.locals.currentUser = req.user;
-	next();
-});
-seedDB();
+//methodOverride use
+app.use(methodOverride('_method'));
+//function to remove all data and then add
+//seedDB(); //seed the database
 
 //Passport configuration
 app.use(
@@ -34,130 +39,18 @@ app.use(passport.session());
 passport.use(new localStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
+//middleware to make current user accessible on all routes
+app.use((req, res, next) => {
+	res.locals.currentUser = req.user;
+	next();
+});
+app.use('/', indexRoutes);
+app.use('/campgrounds/:id/comments', commentRoutes);
+app.use('/campgrounds', campgroundRoutes);
 
-app.get('/', function(req, res) {
-	res.render('landing');
-});
-app.get('/campgrounds', function(req, res) {
-	Campground.find({}, function(err, allcamps) {
-		if (err) {
-			console.log(err);
-		} else {
-			res.render('./campground/index', { campgrounds: allcamps });
-		}
-	});
-});
-//to add a  new campground show form
-app.get('/campgrounds/new', function(req, res) {
-	res.render('./campground/new');
-});
-//post new added campground from that form
-app.post('/campgrounds', function(req, res) {
-	var name = req.body.name;
-	var img = req.body.image;
-	var desc = req.body.description;
-	var newcamp = {
-		name: name,
-		image: img,
-		description: desc
-	};
-
-	Campground.create(newcamp, function(err, cam) {
-		if (err) {
-			console.log(err);
-		} else {
-			res.redirect('/campgrounds');
-		}
-	});
-});
-//to show a particular camp
-app.get('/campgrounds/:id', function(req, res) {
-	Campground.findById(req.params.id).populate('comments').exec(function(err, foundCamp) {
-		if (err) {
-			console.log(err);
-		} else {
-			res.render('./campground/show', { foundcamp: foundCamp });
-		}
-	});
-});
-//================
-//comments route
-app.get('/campgrounds/:id/comments/new', isLoggedIn, (req, res) => {
-	Campground.findById(req.params.id, (err, foundCamp) => {
-		if (err) {
-			console.log(err);
-		} else {
-			res.render('./comments/new', { foundcamp: foundCamp });
-		}
-	});
-});
-app.post('/campgrounds/:id/comments', isLoggedIn, (req, res) => {
-	Campground.findById(req.params.id, (err, foundCamp) => {
-		if (err) {
-			console.log(err);
-		} else {
-			Comment.create(req.body.comment, (err, comment) => {
-				if (err) {
-					console.log(err);
-				} else {
-					foundCamp.comments.push(comment);
-					foundCamp.save();
-					res.redirect('/campgrounds/' + foundCamp._id);
-				}
-			});
-		}
-	});
-});
 app.listen(3000, function() {
 	console.log('The Yelpcamp Server started!!!');
 });
-
-//Authenticaton routes
-
-//Sign Up
-app.get('/register', (req, res) => {
-	res.render('register');
-});
-//Sign up post route
-app.post('/register', (req, res) => {
-	let newUser = new User({ username: req.body.username });
-	User.register(newUser, req.body.password, (err, user) => {
-		if (err) {
-			console.log(err);
-			return res.render('register');
-		}
-		passport.authenticate('local')(req, res, () => {
-			res.redirect('/campgrounds');
-		});
-	});
-});
-
-//Login
-app.get('/login', (req, res) => {
-	res.render('login');
-});
-app.post(
-	'/login',
-	passport.authenticate('local', {
-		successRedirect: '/campgrounds',
-		failureRedirect: '/login'
-	}),
-	(req, res) => {}
-);
-
-//Logout route
-app.get('/logout', (req, res) => {
-	req.logout();
-	res.redirect('/campgrounds');
-});
-
-//login logic
-function isLoggedIn(req, res, next) {
-	if (req.isAuthenticated()) {
-		return next();
-	}
-	res.redirect('/login');
-}
 // Restful Routes
 
 // name       url                  verb   desc

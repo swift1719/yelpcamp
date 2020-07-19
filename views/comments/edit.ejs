@@ -2,19 +2,19 @@
 <div class="container " style="margin-top: 100px;">
     <div class="row">
         <div class="col-sm-12 text-center">
-            <h1>Add new comment to <%= foundcamp.name%></h1>
+            <h1>Edit comment </h1>
         </div>
         <div  style="width: 30%;margin: 10px auto;">
-            <form action="/campgrounds/<%=foundcamp._id%>/comments" method="POST">
+            <form action="/campgrounds/<%=campground_id%>/comments/<%=comment._id%>?_method=PUT" method="POST">
                 <div class="form-group">
-                    <input class="form-control" type="textarea" name="comment[text]" placeholder="comment" >
+                    <input class="form-control" type="text" name="comment[text]" placeholder="comment" value="<%=comment.text%>">
                 </div>
                 <div class="form-group">
                     <button class="btn btn-lg btn-info btn-block">Submit!</button>
                 </div>
                 
             </form>
-            <a href="/campgrounds/<%=foundcamp._id%>">Go back...</a>
+            <a href="/campgrounds/<%=campground_id%>">Go back...</a>
         </div>        
     </div>
 </div>
