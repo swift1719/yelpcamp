@@ -1,6 +1,7 @@
 let express = require('express'),
 	seedDB = require('./seed'),
 	app = express(),
+	flash = require('connect-flash'),
 	bodyparser = require('body-parser'),
 	mongoose = require('mongoose'),
 	passport = require('passport'),
@@ -24,7 +25,7 @@ app.use(express.static(__dirname + '/public'));
 app.use(methodOverride('_method'));
 //function to remove all data and then add
 //seedDB(); //seed the database
-
+app.use(flash());
 //Passport configuration
 app.use(
 	require('express-session')({
@@ -42,6 +43,8 @@ passport.deserializeUser(User.deserializeUser());
 //middleware to make current user accessible on all routes
 app.use((req, res, next) => {
 	res.locals.currentUser = req.user;
+	res.locals.error = req.flash('error');
+	res.locals.success = req.flash('success');
 	next();
 });
 app.use('/', indexRoutes);

@@ -25,3 +25,12 @@ form {
 .delForm {
 	display: inline;
 }
+nav {
+	background-color: #7952b3;
+}
+.navbar-dark .navbar-nav .nav-link {
+	color: #e1dee4;
+}
+.navbar-dark .navbar-nav .nav-link:hover {
+	color: #fff;
+}

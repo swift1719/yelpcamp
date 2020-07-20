@@ -1,6 +1,7 @@
 let express = require('express'),
 	router = express.Router(),
-	Campground = require('../models/campground');
+	Campground = require('../models/campground'),
+	middleware = require('../middleware');
 //show all campgrounds
 router.get('/', function(req, res) {
 	Campground.find({}, function(err, allcamps) {
@@ -12,11 +13,11 @@ router.get('/', function(req, res) {
 	});
 });
 //to add a  new campground show form
-router.get('/new', isLoggedIn, function(req, res) {
+router.get('/new', middleware.isLoggedIn, function(req, res) {
 	res.render('./campground/new');
 });
 //post new added campground from that form
-router.post('/', isLoggedIn, function(req, res) {
+router.post('/', middleware.isLoggedIn, function(req, res) {
 	let name = req.body.name,
 		img = req.body.image,
 		desc = req.body.description,
@@ -51,12 +52,12 @@ router.get('/:id', function(req, res) {
 });
 
 //edit route
-router.get('/:id/edit', checkOwnership, (req, res) => {
+router.get('/:id/edit', middleware.checkOwnership, (req, res) => {
 	Campground.findById(req.params.id, (err, foundCamp) => {
 		res.render('./campground/edit', { campground: foundCamp });
 	});
 });
-router.put('/:id', checkOwnership, (req, res) => {
+router.put('/:id', middleware.checkOwnership, (req, res) => {
 	//find and update correct campground
 	Campground.findByIdAndUpdate(req.params.id, req.body.campground, (err, updatedCamp) => {
 		if (err) {
@@ -67,7 +68,7 @@ router.put('/:id', checkOwnership, (req, res) => {
 	});
 });
 //destroy route
-router.delete('/:id', checkOwnership, (req, res) => {
+router.delete('/:id', middleware.checkOwnership, (req, res) => {
 	Campground.findByIdAndRemove(req.params.id, (err) => {
 		if (err) {
 			console.log(err);
@@ -77,30 +78,4 @@ router.delete('/:id', checkOwnership, (req, res) => {
 	});
 });
 
-//update route
-function isLoggedIn(req, res, next) {
-	if (req.isAuthenticated()) {
-		return next();
-	}
-	res.redirect('/login');
-}
-function checkOwnership(req, res, next) {
-	if (req.isAuthenticated()) {
-		Campground.findById(req.params.id, (err, foundCamp) => {
-			if (err) {
-				console.log(err);
-				res.redirect('/campgrounds');
-			} else {
-				//does user owns the campground?
-				if (foundCamp.author.id.equals(req.user._id)) {
-					next();
-				} else {
-					res.redirect('back');
-				}
-			}
-		});
-	} else {
-		res.redirect('back');
-	}
-}
 module.exports = router;
