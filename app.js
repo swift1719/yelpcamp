@@ -8,6 +8,7 @@ let express = require('express'),
 	localStrategy = require('passport-local'),
 	methodOverride = require('method-override'),
 	User = require('./models/user');
+
 //requiring routes
 let commentRoutes = require('./routes/comment'),
 	campgroundRoutes = require('./routes/campground'),
@@ -26,6 +27,7 @@ app.use(methodOverride('_method'));
 //function to remove all data and then add
 //seedDB(); //seed the database
 app.use(flash());
+
 //Passport configuration
 app.use(
 	require('express-session')({
@@ -34,6 +36,8 @@ app.use(
 		saveUninitialized: false
 	})
 );
+
+app.locals.moment = require('moment');
 
 app.use(passport.initialize());
 app.use(passport.session());

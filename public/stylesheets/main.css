@@ -34,3 +34,8 @@ nav {
 .navbar-dark .navbar-nav .nav-link:hover {
 	color: #fff;
 }
+/*  Maps */
+#map {
+	height: 400px;
+	width: 100%;
+}

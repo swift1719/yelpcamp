@@ -2,6 +2,7 @@ let express = require('express'),
 	router = express.Router(),
 	Campground = require('../models/campground'),
 	middleware = require('../middleware');
+
 //show all campgrounds
 router.get('/', function(req, res) {
 	Campground.find({}, function(err, allcamps) {
@@ -16,18 +17,22 @@ router.get('/', function(req, res) {
 router.get('/new', middleware.isLoggedIn, function(req, res) {
 	res.render('./campground/new');
 });
+
 //post new added campground from that form
 router.post('/', middleware.isLoggedIn, function(req, res) {
 	let name = req.body.name,
 		img = req.body.image,
+		price = req.body.price,
 		desc = req.body.description,
 		author = {
 			id: req.user._id,
 			username: req.user.username
 		};
+
 	let newcamp = {
 		name: name,
 		image: img,
+		price: price,
 		description: desc,
 		author: author
 	};
