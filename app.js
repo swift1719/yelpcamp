@@ -15,10 +15,12 @@ let express = require('express'),
 let commentRoutes = require('./routes/comment'),
 	campgroundRoutes = require('./routes/campground'),
 	indexRoutes = require('./routes/index');
+
 //connecting to mongo database
-//mongoose.connect('mongodb://localhost:27017/yelpcamp', { useNewUrlParser: true, useUnifiedTopology: true });
+
+let dbUrl = process.env.DB_CONN || 'mongodb://localhost:27017/yelpcamp';
 mongoose
-	.connect(process.env.DB_CONN, {
+	.connect(dbUrl, {
 		useNewUrlParser: true,
 		useCreateIndex: true,
 		useUnifiedTopology: true
