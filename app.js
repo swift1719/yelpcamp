@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 let express = require('express'),
 	seedDB = require('./seed'),
 	app = express(),
@@ -14,7 +16,18 @@ let commentRoutes = require('./routes/comment'),
 	campgroundRoutes = require('./routes/campground'),
 	indexRoutes = require('./routes/index');
 //connecting to mongo database
-mongoose.connect('mongodb://localhost:27017/yelpcamp', { useNewUrlParser: true, useUnifiedTopology: true });
+//mongoose.connect('mongodb://localhost:27017/yelpcamp', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose
+	.connect('mongodb+srv://DB_HOST:DB_PASS@yelp.uiyu2.mongodb.net/DB_NAME?retryWrites=true&w=majority', {
+		useNewUrlParser: true,
+		useUnifiedTopology: true
+	})
+	.then(() => {
+		console.log('Connected to DB!');
+	})
+	.catch((err) => {
+		console.log('error: ' + err.message);
+	});
 mongoose.set('useFindAndModify', false);
 //using bodyParser for conversion of data coming from forms
 app.use(bodyparser.urlencoded({ extended: true }));
