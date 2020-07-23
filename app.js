@@ -18,7 +18,7 @@ let commentRoutes = require('./routes/comment'),
 //connecting to mongo database
 //mongoose.connect('mongodb://localhost:27017/yelpcamp', { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose
-	.connect('mongodb+srv://swift1719:TMAm4xahsuu8NhPL@yelp.uiyu2.mongodb.net/yelpcamp?retryWrites=true&w=majority', {
+	.connect('mongodb+srv://DB_HOST:DB_PASS@yelp.uiyu2.mongodb.net/DB_NAME?retryWrites=true&w=majority', {
 		useNewUrlParser: true,
 		useCreateIndex: true,
 		useUnifiedTopology: true
